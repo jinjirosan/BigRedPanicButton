@@ -1,5 +1,5 @@
 /*
- Version 0.1.1
+ Version 0.1.2 - code cleanup
 
  This code is for the BigRedPanicButton. A home safety device which sends an alert over the Sigfox network when the button is pressed.
  The signal results in a callback to a specific email address or emergency SMS gateway.
@@ -7,7 +7,6 @@
  I developed this for my parents (who are of age) as a failsafe in-case someone breaks in or hwne there is an issue with pushy salespeople at the door. I will get notified immediately.
  
 */
-
 
 #include <OneButton.h>
 #include <SigFox.h>
@@ -18,12 +17,12 @@
 
 
 // Setup a new OneButton on pin PIN_INPUT
-// The 2. parameter activeLOW is true, because external wiring sets the button to LOW when pressed.
+// The parameter activeLOW is true, because external wiring sets the button to LOW when pressed.
 OneButton button(PIN_INPUT, true);
 
 // In case the momentary button puts the input to HIGH when pressed:
-// The 2. parameter activeLOW is false when the external wiring sets the button to HIGH when pressed.
-// The 3. parameter can be used to disable the PullUp .
+// The parameter activeLOW is false when the external wiring sets the button to HIGH when pressed.
+// The parameter can be used to disable the PullUp .
 // OneButton button(PIN_INPUT, false, false);
 
 // current LED state, staring with LOW (0)
@@ -52,7 +51,7 @@ void setup()
 
     Serial1.begin(115200);
     while (!Serial1) {}
-    Serial.println("One Button Example with polling.");
+    Serial.println("Starting setup");
   }
 
   if (!SigFox.begin()) {
@@ -68,16 +67,16 @@ void setup()
     SigFox.debug();
   }
 
-  // enable the standard led on pin 13.
+  // enable the LED output on the defined pin_led
   pinMode(PIN_LED, OUTPUT); // sets the digital pin as output
 
-  // enable the standard led on pin 13.
+  // set the LED output to the value in ledState. Mainly used fo the doubleclick action to reverse the LED state.
   digitalWrite(PIN_LED, ledState);
 
   // link the click function to be called on a panicclick event.
   button.attachClick(panicClick);
 
-    // link the click function to be called on a panicclick event.
+    // link the doubleclick function to be called on a double click event.
   button.attachDoubleClick(doubleClick);
 
   // Period of time in which to ignore additional level changes.
@@ -109,6 +108,10 @@ void panicClick()
   Serial.println("panicClick");
 
   digitalWrite(PIN_LED, HIGH);
+
+
+
+
 } // panicClick
 
 // this function will be called when the button was clicked once 
