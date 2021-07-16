@@ -1,5 +1,5 @@
 /*
- Version 0.1.4 - code rewrite for sigfox notification - edited sigfox.cpp !!!
+ Version 0.1.5 - code rewrite for sigfox notification - edited sigfox.cpp !!!
 
  This code is for the BigRedPanicButton. A home safety device which sends an alert over the Sigfox network when the button is pressed.
  The signal results in a callback to a specific email address or emergency SMS gateway.
@@ -14,15 +14,6 @@
 
 #define PIN_INPUT 1
 #define PIN_LED 3
-
-// Setup a new OneButton on pin PIN_INPUT
-// The parameter activeLOW is true, because external wiring sets the button to LOW when pressed.
-//OneButton button(PIN_INPUT, true);
-
-// In case the momentary button puts the input to HIGH when pressed:
-// The parameter activeLOW is false when the external wiring sets the button to HIGH when pressed.
-// The parameter can be used to disable the PullUp .
-// OneButton button(PIN_INPUT, false, false);
 
 // current LED state, staring with LOW (0)
 int ledState = LOW;
@@ -75,21 +66,6 @@ void setup()
 
   // set the LED output to the value in ledState. Mainly used fo the doubleclick action to reverse the LED state.
   //digitalWrite(PIN_LED, ledState);
-
-  // link the click function to be called on a panicclick event.
-  //button.attachClick(panicClick);
-
-    // link the doubleclick function to be called on a double click event.
-//  button.attachDoubleClick(doubleClick);
-
-  // Period of time in which to ignore additional level changes.
-//  button.setDebounceTicks(80);
-
-  // Timeout used to distinguish single clicks from double clicks.
-//  button.setClickTicks(500);
-
-  // Duration to hold a button to trigger a long press.
-//  button.setPressTicks(800);
 
 } // setup
 
@@ -154,31 +130,7 @@ void loop()
 
   }
 
-
-  // keep watching the push button:
-  //button.tick();
-
-  // You can implement other code in here or just wait a while
-  //delay(10);
 } // loop
-
-
-// this function will be called when the button was clicked once 
-//void panicClick()
-//{
-//  Serial.println("panicClick");
-//
-// digitalWrite(PIN_LED, HIGH);
-//} // panicClick
-
-// this function will be called when the button was clicked once 
-//void doubleClick()
-//{
-//  Serial.println("x2");
-//
-//  ledState = !ledState; // reverse the LED
-//  digitalWrite(PIN_LED, ledState);
-//} // panicClick
 
 void reboot() {
   NVIC_SystemReset();
