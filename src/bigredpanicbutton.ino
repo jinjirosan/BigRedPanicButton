@@ -5,6 +5,7 @@
  The signal results in a callback to a specific email address or emergency SMS gateway.
 
  I developed this for my parents (who are of age) as a failsafe in-case someone breaks in or hwne there is an issue with pushy salespeople at the door. I will get notified immediately.
+ 
 */
 
 
