@@ -1,11 +1,25 @@
 /*
- Version 0.1.6 - code rewrite for sigfox notification - edited sigfox.cpp !!!
+ Version 0.1.7 - code rewrite for sigfox notification - edited sigfox.cpp !!!
 
  This code is for the BigRedPanicButton. A home safety device which sends an alert over the Sigfox network when the button is pressed.
  The signal results in a callback to a specific email address or emergency SMS gateway.
 
  I developed this for my parents (who are of age) as a failsafe in-case someone breaks in or hwne there is an issue with pushy salespeople at the door. I will get notified immediately.
- 
+
+Sigfox callback contents:
+
+-- EMERGENCY AT B192 --
+
+Call mom/dad
+
+Status : {customData#status}
+Sequence : {seqNumber}
+Sensor : {customData#sensor}
+Device : {device} - {deviceTypeId}
+Battery percentage: {customData#percentage}
+
+George the BigRedPanicButton
+
 */
 
 //#include <OneButton.h>
@@ -95,7 +109,6 @@ void alarmEvent1() {
 void loop()
 {
   // Sleep until an event is recognized
-  digitalWrite(PIN_LED, LOW);
   LowPower.sleep();
 
   // if we get here it means that an event was received
@@ -116,8 +129,8 @@ void loop()
   int ret = SigFox.endPacket();
 
   // shut down module, back to standby
+  digitalWrite(PIN_LED, LOW);
   SigFox.end();
-  //digitalWrite(PIN_LED, LOW);
 
   if (debug == true) {
     if (ret > 0) {
