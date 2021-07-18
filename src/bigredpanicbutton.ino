@@ -1,5 +1,5 @@
 /*
- Version 0.1.7 - code rewrite for sigfox notification - edited sigfox.cpp !!!
+ Version 0.1.7a - code rewrite for sigfox notification - edited sigfox.cpp !!!
 
  This code is for the BigRedPanicButton. A home safety device which sends an alert over the Sigfox network when the button is pressed.
  The signal results in a callback to a specific email address or emergency SMS gateway.
@@ -22,7 +22,7 @@ George the BigRedPanicButton
 
 */
 
-//#include <OneButton.h>
+//#include <OneButton.h>   // used to enable multi-click events from a single button
 #include <SigFox.h>
 #include <ArduinoLowPower.h>
 
@@ -30,13 +30,13 @@ George the BigRedPanicButton
 #define PIN_LED 3
 
 // current LED state, staring with LOW (0)
-int ledState = LOW;
+//int ledState = LOW;
 
 // Set debug to false to enable continuous mode
 // and disable serial prints
 int debug = false;
 
-volatile int alarm_source = 0;
+volatile int alarm_source = 0, lastState = 0;
 
 // Variables for battery SoC calculation
 float voltage = 0;
@@ -78,8 +78,8 @@ void setup()
   // enable the LED output on the defined pin_led
   pinMode(PIN_LED, OUTPUT); // sets the digital pin as output
 
-  // set the LED output to the value in ledState. Mainly used fo the doubleclick action to reverse the LED state.
-  digitalWrite(PIN_LED, ledState);
+  // set the LED output to the value in ledState. Mainly used for the doubleclick action to reverse the LED state.
+  //digitalWrite(PIN_LED, ledState);
 
 } // setup
 
