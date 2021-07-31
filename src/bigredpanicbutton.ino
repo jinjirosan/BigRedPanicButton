@@ -72,7 +72,7 @@ void setup()
 
   // attach pin 1 to the BigRedPanicButton and enable the interrupt on voltage rising event
   pinMode(1, INPUT_PULLUP);
-  LowPower.attachInterruptWakeup(1, alarmEvent1, RISING);
+  LowPower.attachInterruptWakeup(1, alarmEvent1, CHANGE);
 
   // enable the LED output on the defined pin_led
   pinMode(PIN_LED, OUTPUT); // sets the digital pin as output
@@ -84,9 +84,13 @@ void setup()
 
 void alarmEvent1() {
   alarm_source = 1;
-
+  
+  if (debug == true) {
   Serial.println("Click button");
+  }
+  // Turn the LED on in the button to visually indicate button press
   digitalWrite(PIN_LED, HIGH);
+  
   // battery SoC calculation
   analogReadResolution(10);
   analogReference(AR_INTERNAL1V0);
@@ -98,7 +102,6 @@ void alarmEvent1() {
 
   //battery percentage calculation
   // 2.2 is the cutoff voltage so adjust it for 3.7 V battery pack
-
   battery_percentage = ((voltage - 2.2) / (3 - 2.2)) * 100;
 
   analogReference(AR_DEFAULT);
