@@ -1,5 +1,5 @@
 /*
- Version 0.1.7a - code rewrite for sigfox notification - edited sigfox.cpp !!!
+ Version 0.1.8 - code rewrite for sigfox notification - edited sigfox.cpp !!!
 
  This code is for the BigRedPanicButton. A home safety device which sends an alert over the Sigfox network when the button is pressed.
  The signal results in a callback to a specific email address or emergency SMS gateway.
@@ -22,14 +22,14 @@ George the BigRedPanicButton
 
 */
 
-//#include <OneButton.h>   // used to enable multi-click events from a single button
+//#include <OneButton.h>   // used to enable multi-click events from a single button. Future use.
 #include <SigFox.h>
 #include <ArduinoLowPower.h>
 
 #define PIN_INPUT 1
 #define PIN_LED 3
 
-// current LED state, staring with LOW (0)
+// current LED state, starting with LOW (0). Currently not used, first consistent MVP.
 //int ledState = LOW;
 
 // Set debug to false to enable continuous mode
@@ -43,14 +43,13 @@ float voltage = 0;
 int sensorValue = 0;
 uint8_t battery_percentage = 0;
 
-// setup code here, to run once:
+// Run once
 void setup()
 {
-
     if (debug == true) {
 
-    // We are using Serial1 instead than Serial because we are going in standby
-    // and the USB port could get confused during wakeup. To read the debug prints,
+    // Using Serial1 instead of Serial because of LowPower standby mode
+    // USB port sometimes gets confused during wakeup. To read the debug prints,
     // connect pins 13-14 (TX-RX) to a 3.3V USB-to-serial converter
 
     Serial1.begin(115200);
@@ -63,15 +62,15 @@ void setup()
     reboot();
   }
 
-  //Send module to standby until we need to send a message
+  //Send module to standby until send message
   SigFox.end();
 
   if (debug == true) {
-    // Enable debug prints and LED indication if we are testing
+    // Enable debug prints and LED indication in case of testing
     SigFox.debug();
   }
 
-  // attach pin 1 to a switch and enable the interrupt on voltage rising event
+  // attach pin 1 to the BigRedPanicButton and enable the interrupt on voltage rising event
   pinMode(1, INPUT_PULLUP);
   LowPower.attachInterruptWakeup(1, alarmEvent1, RISING);
 
@@ -81,7 +80,7 @@ void setup()
   // set the LED output to the value in ledState. Mainly used for the doubleclick action to reverse the LED state.
   //digitalWrite(PIN_LED, ledState);
 
-} // setup
+}
 
 void alarmEvent1() {
   alarm_source = 1;
@@ -94,24 +93,24 @@ void alarmEvent1() {
 
   sensorValue = analogRead(ADC_BATTERY);
   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 4.3V):
-  // if you're using a 3.7 V Lithium battery pack - adjust the 3 to 3.7 in the following formulas
+  // In case of 3.7 V Lithium battery pack - adjust the 3 to 3.7 in the following formulas
   voltage = sensorValue * (3 / 1023.0);
 
   //battery percentage calculation
-  // 2.2 is the cutoff voltage so adjust it if you're using a 3.7 V battery pack
+  // 2.2 is the cutoff voltage so adjust it for 3.7 V battery pack
 
   battery_percentage = ((voltage - 2.2) / (3 - 2.2)) * 100;
 
   analogReference(AR_DEFAULT);
 }
 
-// main code here, to run repeatedly:
+// main code
 void loop()
 {
   // Sleep until an event is recognized
   LowPower.sleep();
 
-  // if we get here it means that an event was received
+  // Start this, an event was received
   SigFox.begin();
 
   if (debug == true) {
@@ -121,6 +120,7 @@ void loop()
 
 // 3 bytes (ALM) + 8 bytes (ID as String) + 1 byte (source) < 12 bytes
 // 414c4d = ALM + 313030 = 100 + 1 or 2 for the alarm_source so example 414c4d3130301
+// Used for callback at Sigfox endpoint
   String to_be_sent = "ALM" + String(battery_percentage) +  String(alarm_source);
 
   // sending the payload to Sigfox server
@@ -144,11 +144,9 @@ void loop()
 
   }
 
-} // loop
+}
 
 void reboot() {
   NVIC_SystemReset();
   while (1);
 }
-
-// End
