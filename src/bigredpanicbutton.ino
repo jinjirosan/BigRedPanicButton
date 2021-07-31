@@ -1,5 +1,5 @@
 /*
- Version 0.1.8-r0.1 - code rewrite for sigfox notification - edited sigfox.cpp !!!
+ Version 0.1.8-r0.2 - code rewrite for sigfox notification - edited sigfox.cpp !!!
 
  This code is for the BigRedPanicButton. A home safety device which sends an alert over the Sigfox network when the button is pressed.
  The signal results in a callback to a specific email address or emergency SMS gateway.
@@ -90,7 +90,7 @@ void alarmEvent1() {
   }
   // Turn the LED on in the button to visually indicate button press
   //digitalWrite(PIN_LED, HIGH);
-  //buttonLED();
+  buttonLED2();
   
   // battery SoC calculation
   analogReadResolution(10);
@@ -128,6 +128,10 @@ void buttonLED() {
   }
 }
 
+void buttonLED2() {
+  digitalWrite(PIN_LED, HIGH);
+}
+
 // main code
 void loop()
 {
@@ -153,7 +157,6 @@ void loop()
   int ret = SigFox.endPacket();
 
   // shut down module, back to standby
-  //digitalWrite(PIN_LED, LOW);
   SigFox.end();
 
   if (debug == true) {
@@ -167,7 +170,9 @@ void loop()
     Serial1.println(SigFox.status(ATMEL));
 
   }
-
+  // turn off the LED after x time
+  delay(8000);
+  digitalWrite(PIN_LED, LOW);
 }
 
 void reboot() {
