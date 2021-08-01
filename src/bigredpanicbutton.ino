@@ -1,5 +1,5 @@
 /*
- Version 0.1.8-r0.2 - code rewrite for sigfox notification - edited sigfox.cpp !!!
+ Version 0.1.8-r0.3 - code rewrite for sigfox notification - edited sigfox.cpp !!!
 
  This code is for the BigRedPanicButton. A home safety device which sends an alert over the Sigfox network when the button is pressed.
  The signal results in a callback to a specific email address or emergency SMS gateway.
@@ -44,8 +44,7 @@ int sensorValue = 0;
 uint8_t battery_percentage = 0;
 
 // Run once
-void setup()
-{
+void setup() {
     if (debug == true) {
 
     // Using Serial1 instead of Serial because of LowPower standby mode
@@ -133,8 +132,7 @@ void buttonLED2() {
 }
 
 // main code
-void loop()
-{
+void loop() {
   // Sleep until an event is recognized
   LowPower.sleep();
 
